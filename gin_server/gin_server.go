@@ -35,10 +35,10 @@ func startGin(ctx context.Context, engine *gin.Engine, addr string) {
 	cfg := srvConf{}
 	validateConfigSrv(&cfg)
 
-	serverGin := createServer(engine, addr, &cfg)
+	httpServer := createServer(engine, addr, &cfg)
 
 	go func() {
-		if err := serverGin.ListenAndServe(); err != http.ErrServerClosed {
+		if err := httpServer.ListenAndServe(); err != http.ErrServerClosed {
 			log.Panicf("listen: %s\n", err)
 		}
 	}()
@@ -47,7 +47,7 @@ func startGin(ctx context.Context, engine *gin.Engine, addr string) {
 		<-ctx.Done()
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		if err := serverGin.Shutdown(ctx); err != nil {
+		if err := httpServer.Shutdown(ctx); err != nil {
 			logrus.Error("Server forced to shutdown:", err)
 		}
 	}()
