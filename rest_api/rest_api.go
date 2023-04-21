@@ -1,6 +1,7 @@
 package rest_api
 
 import (
+	"fmt"
 	"github.com/achekslime/core/app"
 	"github.com/achekslime/core/gin_server"
 	"github.com/gin-gonic/gin"
@@ -8,21 +9,21 @@ import (
 
 type RestApiRunner struct {
 	ginRouter *gin.Engine
-	addr      string
+	port      string
 }
 
 func NewService() *RestApiRunner {
 	return &RestApiRunner{}
 }
 
-func (api RestApiRunner) ConfigureServer(router *gin.Engine, addr string) {
+func (api RestApiRunner) ConfigureServer(router *gin.Engine, port string) {
 	api.ginRouter = router
-	api.addr = addr
+	api.port = port
 }
 
 func (api RestApiRunner) Run() {
 	serviceWorker := app.NewServerScript()
-	serviceWorker.Tasks(gin_server.StartGin(api.ginRouter, api.addr))
+	serviceWorker.Tasks(gin_server.StartGin(api.ginRouter, fmt.Sprintf(":%s", api.port)))
 
 	app.StartServer(serviceWorker)
 }
