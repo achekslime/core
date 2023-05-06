@@ -30,7 +30,7 @@ func (service *JwtService) GenerateJWT(email string) (string, error) {
 	return token.SignedString(service.jwtKey)
 }
 
-func (service *JwtService) ValidateToken(signedToken string) error {
+func (service *JwtService) ValidateToken(signedToken string) (*JWTClaim, error) {
 	token, err := jwt.ParseWithClaims(
 		signedToken,
 		&JWTClaim{},
@@ -39,15 +39,15 @@ func (service *JwtService) ValidateToken(signedToken string) error {
 		},
 	)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	claims, ok := token.Claims.(*JWTClaim)
 	if !ok {
-		return errors.New("couldn't parse claims")
+		return nil, errors.New("couldn't parse claims")
 	}
 	if claims.ExpiresAt < time.Now().Local().Unix() {
-		return errors.New("token expired")
+		return nil, errors.New("token expired")
 	}
-	return nil
+	return claims, nil
 }
