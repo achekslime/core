@@ -18,8 +18,8 @@ type RoomStorage interface {
 }
 
 type Storage struct {
-	userStorage UserStorage
-	roomStorage RoomStorage
+	UserStorage UserStorage
+	RoomStorage RoomStorage
 }
 
 func NewStorage() (*Storage, error) {
@@ -29,7 +29,7 @@ func NewStorage() (*Storage, error) {
 	}
 
 	return &Storage{
-		userStorage: postgres.NewUserStorage(db),
-		roomStorage: postgres.NewRoomStorage(db),
+		UserStorage: postgres.NewUserStorage(db),
+		RoomStorage: postgres.NewRoomStorage(db),
 	}, nil
 }
