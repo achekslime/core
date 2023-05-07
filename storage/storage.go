@@ -18,13 +18,13 @@ type RoomStorage interface {
 	GetRoomsByAdminID(userID int) ([]models.Room, error)
 }
 
-type RoomManager struct {
+type Storage struct {
 	userStorage UserStorage
 	roomStorage RoomStorage
 }
 
-func NewManager(db *sqlx.DB) *RoomManager {
-	return &RoomManager{
+func NewStorage(db *sqlx.DB) *Storage {
+	return &Storage{
 		userStorage: postgres.NewUserStorage(db),
 		roomStorage: postgres.NewRoomStorage(db),
 	}
