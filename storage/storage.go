@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"github.com/achekslime/core/storage/models"
+	"github.com/achekslime/core/models"
 	"github.com/achekslime/core/storage/postgres"
 )
 

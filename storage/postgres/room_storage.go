@@ -2,7 +2,7 @@ package postgres
 
 import (
 	"fmt"
-	"github.com/achekslime/core/storage/models"
+	"github.com/achekslime/core/models"
 	"github.com/jmoiron/sqlx"
 )
 
