@@ -54,11 +54,11 @@ func (storage *RoomStorage) GetAllRooms() ([]models.Room, error) {
 	return rooms, nil
 }
 
-func (storage *RoomStorage) GetRoomsByAdminID(userID int) ([]models.Room, error) {
+func (storage *RoomStorage) GetRoomsByAdminID(adminID int) ([]models.Room, error) {
 	query := fmt.Sprintf("SELECT id, name, admin_id FROM %s WHERE admin_id=$1 ", storage.tableName)
 
 	var rooms []models.Room
-	if err := storage.db.Get(&rooms, query, userID); err != nil {
+	if err := storage.db.Select(&rooms, query, adminID); err != nil {
 		return nil, err
 	}
 
