@@ -23,9 +23,14 @@ type Storage struct {
 	roomStorage RoomStorage
 }
 
-func NewStorage(db *sqlx.DB) *Storage {
+func NewStorage(db *sqlx.DB) (*Storage, error) {
+	db, err := postgres.GetPostgresConnection()
+	if err != nil {
+		return nil, err
+	}
+
 	return &Storage{
 		userStorage: postgres.NewUserStorage(db),
 		roomStorage: postgres.NewRoomStorage(db),
-	}
+	}, nil
 }
