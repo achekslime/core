@@ -3,7 +3,6 @@ package storage
 import (
 	"github.com/achekslime/core/storage/models"
 	"github.com/achekslime/core/storage/postgres"
-	"github.com/jmoiron/sqlx"
 )
 
 type UserStorage interface {
@@ -23,7 +22,7 @@ type Storage struct {
 	roomStorage RoomStorage
 }
 
-func NewStorage(db *sqlx.DB) (*Storage, error) {
+func NewStorage() (*Storage, error) {
 	db, err := postgres.GetPostgresConnection()
 	if err != nil {
 		return nil, err
