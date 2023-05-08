@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"github.com/achekslime/core/models"
 	"github.com/jmoiron/sqlx"
+	"strconv"
+	"strings"
 )
+
+const AvailableRoomsTableName = "available_rooms"
 
 type RoomStorage struct {
 	db        *sqlx.DB
@@ -44,7 +48,7 @@ func (storage *RoomStorage) SaveRoom(room *models.Room) error {
 }
 
 func (storage *RoomStorage) GetAllRooms() ([]models.Room, error) {
-	query := fmt.Sprintf("SELECT id, name, admin_id FROM %s", storage.tableName)
+	query := fmt.Sprintf("SELECT * FROM %s", storage.tableName)
 
 	var rooms []models.Room
 	if err := storage.db.Get(&rooms, query); err != nil {
@@ -55,10 +59,36 @@ func (storage *RoomStorage) GetAllRooms() ([]models.Room, error) {
 }
 
 func (storage *RoomStorage) GetRoomsByAdminID(adminID int) ([]models.Room, error) {
-	query := fmt.Sprintf("SELECT id, name, admin_id FROM %s WHERE admin_id=$1 ", storage.tableName)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE admin_id=$1 ", storage.tableName)
 
 	var rooms []models.Room
 	if err := storage.db.Select(&rooms, query, adminID); err != nil {
+		return nil, err
+	}
+
+	return rooms, nil
+}
+
+func (storage *RoomStorage) GetAvailableRooms(userID int) ([]models.Room, error) {
+	// get ids from many-to-many table.
+	getRoomsIdQuery := fmt.Sprintf("SELECT room_id FROM %s WHERE user_id=$1 ", AvailableRoomsTableName)
+	var roomIDs []int
+	if err := storage.db.Select(&roomIDs, getRoomsIdQuery, userID); err != nil {
+		return nil, err
+	}
+
+	// int to string.
+	var ids []string
+	for i := range roomIDs {
+		number := roomIDs[i]
+		text := strconv.Itoa(number)
+		ids = append(ids, text)
+	}
+
+	// grt rooms list.
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id IN (%s)", storage.tableName, strings.Join(ids, ","))
+	var rooms []models.Room
+	if err := storage.db.Select(&rooms, query); err != nil {
 		return nil, err
 	}
 

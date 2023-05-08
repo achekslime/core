@@ -50,7 +50,7 @@ func (storage *UserStorage) SaveUser(user *models.User) error {
 }
 
 func (storage *UserStorage) GetAll() ([]models.User, error) {
-	query := fmt.Sprintf("SELECT id, email, password FROM %s", storage.tableName)
+	query := fmt.Sprintf("SELECT * FROM %s", storage.tableName)
 
 	var user []models.User
 	if err := storage.db.Get(&user, query); err != nil {
@@ -61,7 +61,7 @@ func (storage *UserStorage) GetAll() ([]models.User, error) {
 }
 
 func (storage *UserStorage) GetUserByEmail(email string) (*models.User, error) {
-	query := fmt.Sprintf("SELECT id, email, password FROM %s WHERE email=$1 ", storage.tableName)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1 ", storage.tableName)
 
 	var user models.User
 	if err := storage.db.Get(&user, query, email); err != nil {
