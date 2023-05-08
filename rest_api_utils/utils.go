@@ -19,14 +19,20 @@ func ExtractToken(context *gin.Context) (string, error) {
 	return "", errors.New("invalid token")
 }
 
-func BindNoContent(context *gin.Context, msg string) {
-	context.JSON(http.StatusNoContent, gin.H{"error": msg})
+func BindNoContent(context *gin.Context) {
+	context.JSON(http.StatusNoContent, nil)
 	context.Abort()
 	return
 }
 
 func BindBadRequest(context *gin.Context, err error) {
 	context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	context.Abort()
+	return
+}
+
+func BindUnprocessableEntity(context *gin.Context, err error) {
+	context.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 	context.Abort()
 	return
 }
