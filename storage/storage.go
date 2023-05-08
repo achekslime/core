@@ -15,6 +15,7 @@ type RoomStorage interface {
 	SaveRoom(room *models.Room) error
 	GetAllRooms() ([]models.Room, error)
 	GetRoomsByAdminID(userID int) ([]models.Room, error)
+	GetAvailableRooms(userID int) ([]models.Room, error)
 }
 
 type Storage struct {
