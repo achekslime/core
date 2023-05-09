@@ -52,19 +52,19 @@ func (storage *RoomStorage) SaveRoom(room *models.Room) error {
 }
 
 func (storage *RoomStorage) GetAllRooms() ([]models.Room, error) {
-	// private rooms.
-	privateRooms, err := storage.getAllRooms(PrivateRoomsTableName)
-	if err != nil {
-		return nil, err
-	}
-
 	// public rooms.
 	publicRooms, err := storage.getAllRooms(PublicRoomsTableName)
 	if err != nil {
 		return nil, err
 	}
 
-	return append(privateRooms, publicRooms...), nil
+	// private rooms.
+	privateRooms, err := storage.getAllRooms(PrivateRoomsTableName)
+	if err != nil {
+		return nil, err
+	}
+
+	return append(publicRooms, privateRooms...), nil
 }
 
 func (storage *RoomStorage) getAllRooms(tableName string) ([]models.Room, error) {
@@ -88,18 +88,19 @@ func (storage *RoomStorage) getAllRooms(tableName string) ([]models.Room, error)
 }
 
 func (storage *RoomStorage) GetRoomsByAdminID(adminID int) ([]models.Room, error) {
+	// public rooms.
+	publicRooms, err := storage.getRoomsByAdminID(adminID, PublicRoomsTableName)
+	if err != nil {
+		return nil, err
+	}
+
 	// private rooms.
 	privateRooms, err := storage.getRoomsByAdminID(adminID, PrivateRoomsTableName)
 	if err != nil {
 		return nil, err
 	}
 
-	publicRooms, err := storage.getRoomsByAdminID(adminID, PublicRoomsTableName)
-	if err != nil {
-		return nil, err
-	}
-
-	return append(privateRooms, publicRooms...), nil
+	return append(publicRooms, privateRooms...), nil
 }
 
 func (storage *RoomStorage) getRoomsByAdminID(adminID int, tableName string) ([]models.Room, error) {
@@ -123,11 +124,22 @@ func (storage *RoomStorage) getRoomsByAdminID(adminID int, tableName string) ([]
 }
 
 func (storage *RoomStorage) GetAvailableRooms(userID int) ([]models.Room, error) {
+	// public rooms.
+	publicRooms, err := storage.getAllRooms(PublicRoomsTableName)
+	if err != nil {
+		return nil, err
+	}
+
 	// get ids from many-to-many table.
 	var roomIDs []int
 	getRoomsIdQuery := fmt.Sprintf("SELECT room_id FROM %s WHERE user_id=$1", AvailableRoomsTableName)
-	if err := storage.db.Select(&roomIDs, getRoomsIdQuery, userID); err != nil {
+	if err := storage.db.Get(&roomIDs, getRoomsIdQuery, userID); err != nil {
 		return nil, err
+	}
+
+	// if not exists private rooms.
+	if len(roomIDs) == 0 {
+		return publicRooms, nil
 	}
 
 	// int to string.
@@ -149,11 +161,5 @@ func (storage *RoomStorage) GetAvailableRooms(userID int) ([]models.Room, error)
 		privateRooms[i].Type = models.PrivateRoom
 	}
 
-	// public rooms.
-	publicRooms, err := storage.getAllRooms(PublicRoomsTableName)
-	if err != nil {
-		return nil, err
-	}
-
-	return append(privateRooms, publicRooms...), nil
+	return append(publicRooms, privateRooms...), nil
 }
