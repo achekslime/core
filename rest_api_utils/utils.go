@@ -31,6 +31,12 @@ func BindBadRequest(context *gin.Context, err error) {
 	return
 }
 
+func BindUnauthorized(context *gin.Context, err error) {
+	context.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+	context.Abort()
+	return
+}
+
 func BindUnprocessableEntity(context *gin.Context, err error) {
 	context.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
 	context.Abort()
