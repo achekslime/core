@@ -138,6 +138,13 @@ func (storage *RoomStorage) GetAvailableRooms(userID int) ([]models.Room, error)
 		return nil, err
 	}
 
+	// remove if admin.
+	for i := range publicRooms {
+		if publicRooms[i].AdminID == userID {
+			publicRooms = append(publicRooms[:i], publicRooms[i+1:]...)
+		}
+	}
+
 	// get ids from many-to-many table.
 	var roomIDs []int
 	getRoomsIdQuery := fmt.Sprintf("SELECT room_id FROM %s WHERE user_id=$1", AvailableRoomsTableName)
