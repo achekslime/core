@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"errors"
 	"fmt"
 	"github.com/achekslime/core/models"
 	"github.com/jmoiron/sqlx"
@@ -64,6 +65,9 @@ func (storage *RoomStorage) GetAllRooms() ([]models.Room, error) {
 		return nil, err
 	}
 
+	if len(publicRooms) == 0 && len(privateRooms) == 0 {
+		return nil, errors.New("sql: no rows in result set")
+	}
 	return append(publicRooms, privateRooms...), nil
 }
 
@@ -100,6 +104,10 @@ func (storage *RoomStorage) GetRoomsByAdminID(adminID int) ([]models.Room, error
 		return nil, err
 	}
 
+	if len(publicRooms) == 0 && len(privateRooms) == 0 {
+		return nil, errors.New("sql: no rows in result set")
+	}
+
 	return append(publicRooms, privateRooms...), nil
 }
 
@@ -133,13 +141,17 @@ func (storage *RoomStorage) GetAvailableRooms(userID int) ([]models.Room, error)
 	// get ids from many-to-many table.
 	var roomIDs []int
 	getRoomsIdQuery := fmt.Sprintf("SELECT room_id FROM %s WHERE user_id=$1", AvailableRoomsTableName)
-	if err := storage.db.Get(&roomIDs, getRoomsIdQuery, userID); err != nil {
+	if err := storage.db.Select(&roomIDs, getRoomsIdQuery, userID); err != nil {
 		return nil, err
 	}
 
 	// if not exists private rooms.
 	if len(roomIDs) == 0 {
-		return publicRooms, nil
+		if len(publicRooms) != 0 {
+			return publicRooms, nil
+		} else {
+			return nil, errors.New("sql: no rows in result set")
+		}
 	}
 
 	// int to string.
