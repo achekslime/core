@@ -13,7 +13,7 @@ type UserStorage interface {
 }
 
 type RoomStorage interface {
-	SaveRoom(room *models.Room) error
+	SaveRoom(room *models.Room) (int, error)
 	GetAllRooms() ([]models.Room, error)
 	GetRoomsByAdminID(userID int) ([]models.Room, error)
 	GetAvailableRooms(userID int) ([]models.Room, error)

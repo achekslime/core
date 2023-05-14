@@ -19,10 +19,10 @@ func NewRoomStorage(db *sqlx.DB) *RoomStorage {
 	}
 }
 
-func (storage *RoomStorage) SaveRoom(room *models.Room) error {
+func (storage *RoomStorage) SaveRoom(room *models.Room) (int, error) {
 	tx, err := storage.db.Begin()
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	defer func() {
@@ -45,11 +45,15 @@ func (storage *RoomStorage) SaveRoom(room *models.Room) error {
 	query := fmt.Sprintf("INSERT INTO %s (name, admin_id) "+
 		"values ($1, $2)", tableName)
 
-	if _, err = tx.Exec(query, room.Name, room.AdminID); err != nil {
-		return err
+	row := tx.QueryRow(query, room.Name, room.AdminID)
+
+	var id int
+	err = row.Scan(&id)
+	if err != nil {
+		return 0, err
 	}
 
-	return err
+	return id, err
 }
 
 func (storage *RoomStorage) GetAllRooms() ([]models.Room, error) {
