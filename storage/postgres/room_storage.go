@@ -182,3 +182,28 @@ func (storage *RoomStorage) GetAvailableRooms(userID int) ([]models.Room, error)
 
 	return append(publicRooms, privateRooms...), nil
 }
+
+func (storage *RoomStorage) AddUsersToRoom(roomID int, email string) error {
+	tx, err := storage.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		switch err {
+		case nil:
+			err = tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
+
+	query := fmt.Sprintf("INSERT INTO %s (room_id, user_id) "+
+		"values ($1, $2)", AvailableRoomsTableName)
+
+	if _, err = tx.Exec(query, roomID, email); err != nil {
+		return err
+	}
+
+	return err
+}
