@@ -42,7 +42,7 @@ func (storage *RoomStorage) SaveRoom(room *models.Room) (int, error) {
 		tableName = PublicRoomsTableName
 	}
 
-	query := fmt.Sprintf("INSERT INTO %s (name, admin_id) "+
+	query := fmt.Sprintf("INSERT INTO %s (name, admin_id) RETURNING id"+
 		"values ($1, $2)", tableName)
 
 	row := tx.QueryRow(query, room.Name, room.AdminID)
