@@ -39,10 +39,10 @@ func (storage *UserStorage) SaveUser(user *models.User) error {
 		}
 	}()
 
-	query := fmt.Sprintf("INSERT INTO %s (email, password) "+
-		"values ($1, $2)", storage.tableName)
+	query := fmt.Sprintf("INSERT INTO %s (name, email, password) "+
+		"values ($1, $2, $3)", storage.tableName)
 
-	if _, err = tx.Exec(query, user.Email, user.Password); err != nil {
+	if _, err = tx.Exec(query, user.Name, user.Email, user.Password); err != nil {
 		return err
 	}
 
@@ -65,6 +65,17 @@ func (storage *UserStorage) GetUserByEmail(email string) (*models.User, error) {
 
 	var user models.User
 	if err := storage.db.Get(&user, query, email); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (storage *UserStorage) GetUserByName(name string) (*models.User, error) {
+	query := fmt.Sprintf("SELECT * FROM %s WHERE name=$1 ", storage.tableName)
+
+	var user models.User
+	if err := storage.db.Get(&user, query, name); err != nil {
 		return nil, err
 	}
 
