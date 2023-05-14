@@ -9,6 +9,7 @@ type UserStorage interface {
 	SaveUser(*models.User) error
 	GetAll() ([]models.User, error)
 	GetUserByEmail(email string) (*models.User, error)
+	GetUserByName(name string) (*models.User, error)
 }
 
 type RoomStorage interface {
