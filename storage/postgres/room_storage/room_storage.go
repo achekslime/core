@@ -118,7 +118,7 @@ func (storage *RoomStorage) GetAvailableRooms(userID int) ([]models.Room, error)
 func (storage *RoomStorage) getPrivateRooms(userID int) ([]models.Room, error) {
 	// get ids from many-to-many table.
 	var roomIDs []int
-	getRoomsIdQuery := fmt.Sprintf("SELECT room_id FROM %s WHERE user_id=$1", postgres.AvailableRoomsTableName)
+	getRoomsIdQuery := fmt.Sprintf("SELECT room_id FROM %s WHERE client_id=$1", postgres.AvailableRoomsTableName)
 	if err := storage.db.Select(&roomIDs, getRoomsIdQuery, userID); err != nil {
 		return nil, err
 	}
