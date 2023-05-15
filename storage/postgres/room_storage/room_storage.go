@@ -53,6 +53,9 @@ func (storage *RoomStorage) GetAllRooms() ([]models.Room, error) {
 	if err := storage.db.Select(&rooms, query); err != nil {
 		return nil, err
 	}
+	if len(rooms) == 0 {
+		return nil, fmt.Errorf(postgres.ErrSqlNoRows)
+	}
 	return rooms, nil
 }
 
@@ -61,6 +64,10 @@ func (storage *RoomStorage) GetRoomsByAdminID(adminID int) ([]models.Room, error
 	query := fmt.Sprintf("SELECT * FROM %s WHERE admin_id=$1", postgres.RoomTableName)
 	if err := storage.db.Select(&rooms, query, adminID); err != nil {
 		return nil, err
+	}
+
+	if len(rooms) == 0 {
+		return nil, fmt.Errorf(postgres.ErrSqlNoRows)
 	}
 	return rooms, nil
 }
@@ -79,6 +86,10 @@ func (storage *RoomStorage) IsRoomAvailable(roomID int, userID int) (bool, error
 	query := fmt.Sprintf("SELECT room_id FROM %s WHERE user_id=$1 && room_id=$2", postgres.AvailableRoomsTableName)
 	if err := storage.db.Select(&roomIDs, query, userID, roomID); err != nil {
 		return false, err
+	}
+
+	if len(roomIDs) == 0 {
+		return false, fmt.Errorf(postgres.ErrSqlNoRows)
 	}
 	return true, nil
 }
