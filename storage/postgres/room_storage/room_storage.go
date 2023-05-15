@@ -35,7 +35,7 @@ func (storage *RoomStorage) SaveRoom(room *models.Room) (int, error) {
 		}
 	}()
 
-	query := fmt.Sprintf("INSERT INTO %s (name, admin_id, is_private) values ($1, $2) RETURNING id", postgres.RoomTableName)
+	query := fmt.Sprintf("INSERT INTO %s (name, admin_id, is_private) values ($1, $2, $3) RETURNING id", postgres.RoomTableName)
 	row := tx.QueryRow(query, room.Name, room.AdminID, room.IsPrivate)
 
 	var id int
