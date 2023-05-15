@@ -1,8 +1,9 @@
-package postgres
+package user_storage
 
 import (
 	"fmt"
 	"github.com/achekslime/core/models"
+	"github.com/achekslime/core/storage/postgres"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -20,7 +21,7 @@ type UserStorage struct {
 func NewUserStorage(db *sqlx.DB) *UserStorage {
 	return &UserStorage{
 		db:        db,
-		tableName: UserTableName,
+		tableName: postgres.UserTableName,
 	}
 }
 

@@ -15,8 +15,8 @@ const (
 )
 
 type Room struct {
-	ID      int      `json:"id" db:"id"`
-	Name    string   `json:"name" db:"name" binding:"required"`
-	AdminID int      `json:"admin_id" db:"admin_id"`
-	Type    RoomType `json:"room_type"`
+	ID        int    `json:"id" db:"id"`
+	Name      string `json:"name" db:"name" binding:"required"`
+	AdminID   int    `json:"admin_id" db:"admin_id"`
+	IsPrivate bool   `json:"is_private" db:"is_private"`
 }

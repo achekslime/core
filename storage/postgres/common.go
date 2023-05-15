@@ -1,9 +1,7 @@
 package postgres
 
 const (
-	UserTableName = "client"
-
-	PrivateRoomsTableName   = "private_room"
-	PublicRoomsTableName    = "public_room"
+	UserTableName           = "client"
+	RoomTableName           = "room"
 	AvailableRoomsTableName = "available_rooms"
 )

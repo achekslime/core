@@ -3,6 +3,8 @@ package storage
 import (
 	"github.com/achekslime/core/models"
 	"github.com/achekslime/core/storage/postgres"
+	"github.com/achekslime/core/storage/postgres/room_storage"
+	"github.com/achekslime/core/storage/postgres/user_storage"
 )
 
 type UserStorage interface {
@@ -32,7 +34,7 @@ func NewStorage() (*Storage, error) {
 	}
 
 	return &Storage{
-		UserStorage: postgres.NewUserStorage(db),
-		RoomStorage: postgres.NewRoomStorage(db),
+		UserStorage: user_storage.NewUserStorage(db),
+		RoomStorage: room_storage.NewRoomStorage(db),
 	}, nil
 }
