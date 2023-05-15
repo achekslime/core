@@ -18,7 +18,7 @@ type RoomStorage interface {
 	SaveRoom(room *models.Room) (int, error)
 	GetAllRooms() ([]models.Room, error)
 	GetRoomsByAdminID(userID int) ([]models.Room, error)
-	GetRoomByName(name string) ([]models.Room, error)
+	GetRoomByName(name string) (*models.Room, error)
 	GetAvailableRooms(userID int) ([]models.Room, error)
 	AddUsersToRoom(roomID int, userID int) error
 }
