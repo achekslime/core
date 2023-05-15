@@ -5,6 +5,6 @@ const (
 	RoomTableName           = "room"
 	AvailableRoomsTableName = "available_rooms"
 
-	errUniqueConstraintDuplicate = "duplicate key value violates unique constraint"
-	errSqlNoRows                 = "sql: no rows in result set"
+	ErrUniqueConstraintDuplicate = "duplicate key value violates unique constraint"
+	ErrSqlNoRows                 = "sql: no rows in result set"
 )
