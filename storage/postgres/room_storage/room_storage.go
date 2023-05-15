@@ -50,7 +50,7 @@ func (storage *RoomStorage) SaveRoom(room *models.Room) (int, error) {
 func (storage *RoomStorage) GetAllRooms() ([]models.Room, error) {
 	var rooms []models.Room
 	query := fmt.Sprintf("SELECT * FROM %s", postgres.RoomTableName)
-	if err := storage.db.Select(&rooms, query); err != nil {
+	if err := storage.db.Get(&rooms, query); err != nil {
 		return nil, err
 	}
 	return rooms, nil
@@ -59,7 +59,7 @@ func (storage *RoomStorage) GetAllRooms() ([]models.Room, error) {
 func (storage *RoomStorage) GetRoomsByAdminID(adminID int) ([]models.Room, error) {
 	var rooms []models.Room
 	query := fmt.Sprintf("SELECT * FROM %s WHERE admin_id=$1", postgres.RoomTableName)
-	if err := storage.db.Select(&rooms, query, adminID); err != nil {
+	if err := storage.db.Get(&rooms, query, adminID); err != nil {
 		return nil, err
 	}
 	return rooms, nil
