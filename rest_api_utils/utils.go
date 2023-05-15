@@ -44,7 +44,7 @@ func BindUnprocessableEntity(context *gin.Context, err error) {
 }
 
 func BindInternalError(context *gin.Context, err error) {
-	context.JSON(http.StatusInternalServerError, gin.H{"db error": err.Error()})
+	context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	context.Abort()
 	return
 }
