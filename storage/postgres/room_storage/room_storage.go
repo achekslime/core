@@ -146,7 +146,7 @@ func (storage *RoomStorage) getPrivateRooms(userID int) ([]models.Room, error) {
 	return privateRooms, nil
 }
 
-func (storage *RoomStorage) AddUsersToRoom(roomID int, userID int) error {
+func (storage *RoomStorage) AddUserToRoom(roomID int, userID int) error {
 	tx, err := storage.db.Begin()
 	if err != nil {
 		return err
@@ -161,7 +161,7 @@ func (storage *RoomStorage) AddUsersToRoom(roomID int, userID int) error {
 		}
 	}()
 
-	query := fmt.Sprintf("INSERT INTO %s (room_id, user_id) "+
+	query := fmt.Sprintf("INSERT INTO %s (room_id, client_id) "+
 		"values ($1, $2)", postgres.AvailableRoomsTableName)
 
 	if _, err = tx.Exec(query, roomID, userID); err != nil {

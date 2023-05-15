@@ -20,7 +20,7 @@ type RoomStorage interface {
 	GetRoomsByAdminID(userID int) ([]models.Room, error)
 	GetRoomByName(name string) (*models.Room, error)
 	GetAvailableRooms(userID int) ([]models.Room, error)
-	AddUsersToRoom(roomID int, userID int) error
+	AddUserToRoom(roomID int, userID int) error
 }
 
 type Storage struct {
