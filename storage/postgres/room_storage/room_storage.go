@@ -65,13 +65,22 @@ func (storage *RoomStorage) GetRoomsByAdminID(adminID int) ([]models.Room, error
 	return rooms, nil
 }
 
-func (storage *RoomStorage) GetRoomByName(name string) ([]models.Room, error) {
-	var rooms []models.Room
+func (storage *RoomStorage) GetRoomByName(name string) (*models.Room, error) {
+	var room models.Room
 	query := fmt.Sprintf("SELECT * FROM %s WHERE name=$1", postgres.RoomTableName)
-	if err := storage.db.Get(&rooms, query, name); err != nil {
+	if err := storage.db.Get(&room, query, name); err != nil {
 		return nil, err
 	}
-	return rooms, nil
+	return &room, nil
+}
+
+func (storage *RoomStorage) IsRoomAvailable(roomID int, userID int) (bool, error) {
+	var roomIDs []int
+	query := fmt.Sprintf("SELECT room_id FROM %s WHERE user_id=$1 && room_id=$2", postgres.AvailableRoomsTableName)
+	if err := storage.db.Get(&roomIDs, query, userID, roomID); err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func (storage *RoomStorage) GetAvailableRooms(userID int) ([]models.Room, error) {
