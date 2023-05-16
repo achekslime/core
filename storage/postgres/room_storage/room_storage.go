@@ -44,6 +44,11 @@ func (storage *RoomStorage) SaveRoom(room *models.Room) (int, error) {
 		return 0, err
 	}
 
+	// add to available rooms.
+	err = storage.AddUserToRoom(room.ID, room.AdminID)
+	if err != nil {
+		return 0, err
+	}
 	return id, err
 }
 
