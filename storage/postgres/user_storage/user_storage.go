@@ -61,6 +61,17 @@ func (storage *UserStorage) GetAll() ([]models.User, error) {
 	return user, nil
 }
 
+func (storage *UserStorage) GetUserByID(id int) (*models.User, error) {
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1 ", storage.tableName)
+
+	var user models.User
+	if err := storage.db.Get(&user, query, id); err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 func (storage *UserStorage) GetUserByEmail(email string) (*models.User, error) {
 	query := fmt.Sprintf("SELECT * FROM %s WHERE email=$1 ", storage.tableName)
 
