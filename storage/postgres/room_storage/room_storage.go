@@ -26,15 +26,6 @@ func (storage *RoomStorage) SaveRoom(room *models.Room) (int, error) {
 		return 0, err
 	}
 
-	defer func() {
-		switch err {
-		case nil:
-			err = tx.Commit()
-		default:
-			tx.Rollback()
-		}
-	}()
-
 	query := fmt.Sprintf("INSERT INTO %s (name, admin_id, is_private) values ($1, $2, $3) RETURNING id", postgres.RoomTableName)
 	row := tx.QueryRow(query, room.Name, room.AdminID, room.IsPrivate)
 
@@ -43,12 +34,18 @@ func (storage *RoomStorage) SaveRoom(room *models.Room) (int, error) {
 	if err != nil {
 		return 0, err
 	}
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return 0, err
+	}
 
 	// add to available rooms.
 	err = storage.AddUserToRoom(room.ID, room.AdminID)
 	if err != nil {
 		return 0, err
 	}
+
 	return id, err
 }
 
