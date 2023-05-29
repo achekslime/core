@@ -243,7 +243,7 @@ func (storage *RoomStorage) delRoom(roomID int) error {
 		}
 	}()
 
-	query := fmt.Sprintf("DELETE FROM %s WHERE room_id=%d", postgres.RoomTableName, roomID)
+	query := fmt.Sprintf("DELETE FROM %s WHERE id=%d", postgres.RoomTableName, roomID)
 
 	if _, err = tx.Exec(query); err != nil {
 		return err
