@@ -187,7 +187,7 @@ func (storage *RoomStorage) DelRoom(room models.Room) error {
 		}
 	}
 
-	err = storage.delRoom(room.AdminID)
+	err = storage.delRoom(room.ID)
 	if err != nil {
 		return err
 	}
