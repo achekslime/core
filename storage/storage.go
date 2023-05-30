@@ -23,6 +23,7 @@ type RoomStorage interface {
 	GetAvailableRooms(userID int) ([]models.Room, error)
 	AddUserToRoom(roomID int, userID int) error
 	DelRoom(room models.Room) error
+	ClearAll() error
 }
 
 type Storage struct {

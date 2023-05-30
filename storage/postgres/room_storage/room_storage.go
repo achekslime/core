@@ -251,3 +251,82 @@ func (storage *RoomStorage) delRoom(roomID int) error {
 
 	return err
 }
+
+func (storage *RoomStorage) ClearAll() error {
+	err := storage.clearAvailableRooms()
+	if err != nil {
+		return err
+	}
+
+	err = storage.clearRooms()
+	if err != nil {
+		return err
+	}
+
+	err = storage.clearUsers()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (storage *RoomStorage) clearAvailableRooms() error {
+	tx, err := storage.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		switch err {
+		case nil:
+			err = tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
+	query := fmt.Sprintf("DELETE FROM %s", postgres.AvailableRoomsTableName)
+	if _, err = tx.Exec(query); err != nil {
+		return err
+	}
+	return err
+}
+
+func (storage *RoomStorage) clearRooms() error {
+	tx, err := storage.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		switch err {
+		case nil:
+			err = tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
+	query := fmt.Sprintf("DELETE FROM %s", postgres.RoomTableName)
+	if _, err = tx.Exec(query); err != nil {
+		return err
+	}
+	return err
+}
+
+func (storage *RoomStorage) clearUsers() error {
+	tx, err := storage.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		switch err {
+		case nil:
+			err = tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
+	query := fmt.Sprintf("DELETE FROM %s", postgres.UserTableName)
+	if _, err = tx.Exec(query); err != nil {
+		return err
+	}
+	return err
+}
